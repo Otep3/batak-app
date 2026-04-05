@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Batak Fitness club</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="loader">
+  <div class="loader-content">
+
+    <!-- APP ICON -->
+    <div class="logo-wrap">
+      <img src="icon.png" class="app-icon" />
+      <div class="glow-ring"></div>
+    </div>
+
+    <!-- BRAND -->
+    <h1 class="loader-logo">
+  <span class="batak-text">BATAK</span>
+  <span class="fitness-text">FITNESS</span>
+</h1>
+
+    <!--  TEXT -->
+    <p class="loader-text" id="Text">
+      Created By, Joseph Abella
+    </p>
+
+  </div>
+</div>
+
+    <!-- exercise popup-->
+    <div id="exercise-popup" class="ex-popup">
+  <div class="ex-popup-content" id="ex-popup-content"></div>
+</div>
+<div class="phone" id="app">
+
+  <!-- ── AUTH OVERLAY ── -->
+  <div class="auth-overlay" id="auth-overlay">
+    <div class="auth-bg-pattern"></div>
+    <div class="auth-content">
+      <div class="auth-logo">
+        <div class="auth-logo-icon">🔥</div>
+        <div class="auth-logo-text">BATAK</div>
+        <div class="auth-logo-sub">FITNESS</div>
+      </div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Log In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</button>
+      </div>
+      <!-- LOGIN FORM -->
+      <div class="auth-form" id="form-login">
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">📧</span>
+          <input class="auth-input" id="login-email" type="email" placeholder="Email address" autocomplete="email">
+        </div>
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">🔒</span>
+          <input class="auth-input" id="login-password" type="password" placeholder="Password" autocomplete="current-password">
+          <button class="auth-eye" onclick="togglePass('login-password',this)">👀</button>
+        </div>
+        <div class="auth-forgot" onclick="showForgotPassword()">Forgot password?</div>
+        <div class="auth-error" id="login-error"></div>
+        <button class="auth-btn" onclick="handleLogin()">LOG IN →</button>
+        <div class="auth-divider"><span>or continue with</span></div>
+        <div class="auth-social">
+          <button class="auth-social-btn" onclick="handleSocialLogin('Anonymous')">👽 Anonymous</button>
+          <button class="auth-social-btn" onclick="handleSocialLogin('Guest')">🧒 Guest</button>
+        </div>
+      </div>
+      <!-- SIGNUP FORM -->
+      <div class="auth-form" id="form-signup" style="display:none;">
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">👤</span>
+          <input class="auth-input" id="signup-name" type="text" placeholder="Full name" autocomplete="name">
+        </div>
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">📧</span>
+          <input class="auth-input" id="signup-email" type="email" placeholder="Email address" autocomplete="email">
+        </div>
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">🔒</span>
+          <input class="auth-input" id="signup-password" type="password" placeholder="Password (min 6 chars)" autocomplete="new-password">
+          <button class="auth-eye" onclick="togglePass('signup-password',this)">👀</button>
+        </div>
+        <div class="auth-field-wrap">
+          <span class="auth-field-icon">✅</span>
+          <input class="auth-input" id="signup-confirm" type="password" placeholder="Confirm password" autocomplete="new-password">
+        </div>
+        <div class="auth-error" id="signup-error"></div>
+        <button class="auth-btn" onclick="handleSignup()">CREATE ACCOUNT →</button>
+        <div class="auth-divider"><span>or continue as a </span></div>
+        <div class="auth-social">
+          <button class="auth-social-btn" onclick="handleSocialLogin('Anonymous')">👽 Anonymous</button>
+          <button class="auth-social-btn" onclick="handleSocialLogin('Guest')">🧒 Guest</button>
+        </div>
+        <div class="auth-terms">By signing up you agree to our <span onclick="toast('Terms: Train hard!','success')">Terms</span> &amp; <span onclick="toast('Your data stays yours.','success')">Privacy</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FORGOT PASSWORD MODAL ── -->
+  <div class="fp-overlay" id="fp-overlay" style="display:none;">
+    <div class="fp-modal" id="fp-modal">
+      <button class="fp-close" onclick="closeForgotPassword()">✕</button>
+      <!-- Step 1: Enter email -->
+      <div id="fp-step1">
+        <div class="fp-icon">🔑</div>
+        <div class="fp-title">Forgot Password?</div>
+        <div class="fp-subtitle">Enter your registered email and we'll verify your account.</div>
+        <div class="auth-field-wrap" style="margin-bottom:12px;">
+          <span class="auth-field-icon">📧</span>
+          <input class="auth-input" id="fp-email" type="email" placeholder="Your email address" autocomplete="email">
+        </div>
+        <div class="auth-error" id="fp-error1"></div>
+        <button class="auth-btn" onclick="handleForgotEmail()">VERIFY EMAIL →</button>
+        <div class="fp-back" onclick="closeForgotPassword()">← Back to Login</div>
+      </div>
+      <!-- Step 2: Security check -->
+      <div id="fp-step2" style="display:none;">
+        <div class="fp-icon">🛡️</div>
+        <div class="fp-title">Security Check</div>
+        <div class="fp-subtitle" id="fp-sec-prompt">Answer to verify it's you.</div>
+        <div class="auth-field-wrap" style="margin-bottom:12px;">
+          <span class="auth-field-icon">💬</span>
+          <input class="auth-input" id="fp-sec-answer" type="text" placeholder="Your answer">
+        </div>
+        <div class="auth-error" id="fp-error2"></div>
+        <button class="auth-btn" onclick="handleSecurityCheck()">CONFIRM →</button>
+        <div class="fp-back" onclick="fpGoStep(1)">← Back</div>
+      </div>
+      <!-- Step 3: Set new password -->
+      <div id="fp-step3" style="display:none;">
+        <div class="fp-icon">🔒</div>
+        <div class="fp-title">New Password</div>
+        <div class="fp-subtitle">Choose a strong new password for your account.</div>
+        <div class="auth-field-wrap" style="margin-bottom:12px;">
+          <span class="auth-field-icon">🔒</span>
+          <input class="auth-input" id="fp-newpass" type="password" placeholder="New password (min 6 chars)" autocomplete="new-password">
+          <button class="auth-eye" onclick="togglePass('fp-newpass',this)">👀</button>
+        </div>
+        <div class="fp-strength-bar"><div id="fp-strength-fill"></div></div>
+        <div id="fp-strength-label" style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;text-align:left;font-family:var(--font-mono);"></div>
+        <div class="auth-field-wrap" style="margin-bottom:12px;">
+          <span class="auth-field-icon">✅</span>
+          <input class="auth-input" id="fp-confirmpass" type="password" placeholder="Confirm new password" autocomplete="new-password">
+        </div>
+        <div class="auth-error" id="fp-error3"></div>
+        <button class="auth-btn" onclick="handleNewPassword()">RESET PASSWORD →</button>
+        <div class="fp-back" onclick="fpGoStep(2)">← Back</div>
+      </div>
+      <!-- Step 4: Success -->
+      <div id="fp-step4" style="display:none;">
+        <div class="fp-icon fp-success-icon">✅</div>
+        <div class="fp-title">Password Reset!</div>
+        <div class="fp-subtitle">Your password has been updated. You can now log in with your new password.</div>
+        <button class="auth-btn" onclick="closeForgotPassword()">GO TO LOGIN →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status">
+    <div class="notch"></div>
+    <span id="clock">9:41</span>
+    <div class="status-icons"><span>●●●</span><span>📶</span><span>🔋</span></div>
+  </div>
+
+  <!-- Screens -->
+  <div class="screens">      
+    <!-- ── HOME ── -->
+<div class="screen active" id="s-home">
+   
+      <div class="ph">
+        <div class="ph-top">
+          <div>
+            <div class="pt" id="home-greeting">GOOD MORNING</div>            <div class="ps" id="home-date">Let's crush it today 💪</div>
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+              <span class="theme-toggle-track">
+                <span class="theme-toggle-thumb"></span>
+                <span class="theme-icon-dark">🌙</span>
+                <span class="theme-icon-light">☀️</span>
+              </span>
+            </button>
+            <div class="icon-btn" onclick="openNotifCenter()" style="position:relative;" id="bell-btn">🔔<div class="bell-badge" id="bell-badge" style="display:none;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-hero anim">
+        <div class="hero-streak" id="streak-label">🔥 0 DAY STREAK</div>
+        <div class="hero-title">STAY<br><span>STRONG</span></div>
+        <div class="hero-sub" id="hero-sub-text">Start your first workout!</div>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-val" id="h-workouts">0</div><div class="hstat-lbl">Workouts</div></div>
+          <div class="hstat"><div class="hstat-val" id="h-mins">0</div><div class="hstat-lbl">Minutes</div></div>
+          <div class="hstat"><div class="hstat-val" id="h-cal">0</div><div class="hstat-lbl">Calories</div></div>
+        </div>
+      </div>
+
+      <!-- Progress Rings -->
+      <div class="ring-wrap anim" style="animation-delay:0.05s">
+        <div class="ring-card">
+          <canvas id="ring-workouts" width="52" height="52"></canvas>
+          <div class="ring-info">
+            <div class="ring-title">Workouts</div>
+            <div class="ring-val" id="ring-w-val">0 / 5 this week</div>
+          </div>
+        </div>
+        <div class="ring-card">
+          <canvas id="ring-calories" width="52" height="52"></canvas>
+          <div class="ring-info">
+            <div class="ring-title">Calories</div>
+            <div class="ring-val" id="ring-c-val">0 / 2000 kcal</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Today's Plan -->
+      <div class="today-section anim" style="animation-delay:0.1s">
+        <div class="section-lbl px22" style="margin-top:18px;">Today's Workouts</div>
+        <div id="today-workouts"></div>
+      </div>
+
+      <!-- Weekly Chart -->
+      <div class="chart-card anim" style="animation-delay:0.15s">
+        <div class="chart-header">
+          <div class="chart-title">Weekly Activity</div>
+          <div style="font-size:0.7rem;color:var(--muted2);">Past 7 days</div>
+        </div>
+        <canvas id="week-chart" height="120"></canvas>
+      </div>
+    </div>
+
+    <!-- ── WORKOUTS ── -->
+    <div class="screen" id="s-workouts">
+      <div class="ph">
+        <div class="ph-top">
+          <div><div class="pt">WORKOUTS</div><div class="ps">Choose your program</div></div>
+          <div style="display:flex;gap:8px;">
+            <div class="icon-btn" onclick="goTo('exercises')" title="Exercise Library">💪</div>
+            <div class="icon-btn" onclick="openBuilder()" title="Create Custom Workout">✏️</div>
+          </div>
+        </div>
+      </div>
+      <div class="plan-tabs" id="plan-tabs">
+        <button class="plan-tab active" onclick="filterPlans('All')">All</button>
+        <button class="plan-tab" onclick="filterPlans('Strength')">Strength</button>
+        <button class="plan-tab" onclick="filterPlans('Cardio')">Cardio</button>
+        <button class="plan-tab" onclick="filterPlans('HIIT')">HIIT</button>
+        <button class="plan-tab" onclick="filterPlans('Flexibility')">Flexibility</button>
+      </div>
+      <div id="workout-list"></div>
+    </div>
+
+    <!-- ── EXERCISES ── -->
+    <div class="screen" id="s-exercises">
+      <div class="ph">
+        <div class="ph-top">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="icon-btn" onclick="goTo('workouts')" title="Back">‹</div>
+            <div><div class="pt">EXERCISES</div><div class="ps">Exercise library</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="ex-search">
+        <span>🔍</span>
+        <input type="text" id="ex-search" placeholder="Search exercises…" oninput="filterExercises()">
+      </div>
+      <div class="muscle-chips" id="muscle-chips"></div>
+      <div class="ex-grid" id="ex-grid"></div>
+    </div>
+
+    <!-- ── HISTORY ── -->
+    <div class="screen" id="s-history">
+      <div class="ph">
+        <div class="ph-top">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div class="icon-btn" onclick="goTo('profile')" title="Back">‹</div>
+            <div><div class="pt">HISTORY</div><div class="ps" id="hist-sub">All workouts</div></div>
+          </div>
+        </div>
+      </div>
+      <div id="history-list" style="padding-bottom:8px;"></div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="screen" id="s-profile">
+      <div class="ph">
+        <div class="ph-top">
+          <div><div class="pt">PROFILE</div><div class="ps">Your fitness journey</div></div>
+          <div class="icon-btn" onclick="goTo('history')" title="Workout History">📋</div>
+        </div>
+      </div>
+      <div class="prof-hero anim">
+        <div class="prof-avatar-wrap" onclick="document.getElementById('avatar-input').click()" title="Change profile photo">
+          <div class="prof-avatar" id="prof-avatar-display">🏋️</div>
+          <div class="prof-avatar-edit-overlay">
+            <span class="prof-avatar-edit-icon">📷</span>
+          </div>
+        </div>
+        <input type="file" id="avatar-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(event)">
+        <div>
+          <div class="prof-name" id="prof-name">ATHLETE</div>
+          <div class="prof-level" id="prof-level">BEGINNER</div>
+          <div class="prof-since" id="prof-since">Member since today</div>
+        </div>
+      </div>
+      <div class="stats-grid-4">
+        <div class="sg-card anim" style="animation-delay:0.05s"><div class="sg-val orange" id="pg-total">0</div><div class="sg-lbl">Total Workouts</div></div>
+        <div class="sg-card anim" style="animation-delay:0.1s"><div class="sg-val cyan" id="pg-mins">0</div><div class="sg-lbl">Total Minutes</div></div>
+        <div class="sg-card anim" style="animation-delay:0.15s"><div class="sg-val green" id="pg-cal">0</div><div class="sg-lbl">Calories Burned</div></div>
+        <div class="sg-card anim" style="animation-delay:0.2s"><div class="sg-val purple" id="pg-streak">0</div><div class="sg-lbl">Best Streak</div></div>
+      </div>
+
+      <!-- Achievements -->
+      <div style="margin:14px 22px 0;"><div class="section-lbl">Achievements</div></div>
+      <div class="achievements" id="achievements"></div>
+
+      <!-- Goals -->
+      <div class="goal-card">
+        <div class="section-lbl" style="margin-bottom:14px;">Weekly Goals</div>
+        <div id="goals-list"></div>
+      </div>
+
+      <!-- Month chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Monthly Progress</div>
+        </div>
+        <canvas id="month-chart" height="130"></canvas>
+      </div>
+
+      <!-- Logout -->
+      <div style="margin:14px 22px 20px;">
+        <button onclick="handleLogout()" style="width:100%;padding:14px;border-radius:14px;border:1.5px solid var(--red-dim);background:var(--red-dim);color:var(--red);font-family:var(--font-body);font-size:0.9rem;font-weight:800;letter-spacing:0.06em;cursor:pointer;transition:all 0.2s;">🚪 LOG OUT</button>
+      </div>
+    </div>
+
+    <!-- ── NUTRITION ── -->
+    <div class="screen" id="s-nutrition">
+      <div class="ph">
+        <div class="ph-top">
+          <div><div class="pt">NUTRITION</div><div class="ps" id="nut-date-label">Today's food log</div></div>
+          <div class="icon-btn" onclick="openNutGoalsSheet()">⚙️</div>
+        </div>
+      </div>
+
+      <!-- Calorie hero -->
+      <div class="calorie-hero">
+        <div class="cal-label">Calories Today</div>
+        <div class="cal-big"><span id="nut-cal-eaten">0</span> <span>/ <span id="nut-cal-goal">2000</span> kcal</span></div>
+        <div style="margin-top:10px;height:6px;background:rgba(255,255,255,0.06);border-radius:99px;overflow:hidden;">
+          <div id="nut-cal-bar" style="height:100%;background:var(--green);border-radius:99px;transition:width 0.6s ease;width:0%"></div>
+        </div>
+        <div class="cal-row">
+          <div class="cal-stat"><div class="cal-stat-val" id="nut-remaining">2000</div><div class="cal-stat-lbl">Remaining</div></div>
+          <div class="cal-stat"><div class="cal-stat-val" id="nut-burned">0</div><div class="cal-stat-lbl">Burned</div></div>
+          <div class="cal-stat"><div class="cal-stat-val" id="nut-net">2000</div><div class="cal-stat-lbl">Net</div></div>
+        </div>
+      </div>
+
+      <!-- Macro rings -->
+      <div class="macro-ring-row">
+        <div class="macro-ring-card">
+          <div class="macro-ring-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/><circle id="mr-protein" cx="32" cy="32" r="26" fill="none" stroke="#ff6b2b" stroke-width="6" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="163"/></svg>
+            <div class="macro-ring-val"><div class="macro-ring-num" id="mr-p-val">0g</div><div class="macro-ring-unit">eaten</div></div>
+          </div>
+          <div class="macro-name" style="color:var(--orange)">Protein</div>
+          <div style="font-size:0.62rem;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;" id="mr-p-goal">/ 150g</div>
+        </div>
+        <div class="macro-ring-card">
+          <div class="macro-ring-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/><circle id="mr-carbs" cx="32" cy="32" r="26" fill="none" stroke="#00d4ff" stroke-width="6" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="163"/></svg>
+            <div class="macro-ring-val"><div class="macro-ring-num" id="mr-c-val">0g</div><div class="macro-ring-unit">eaten</div></div>
+          </div>
+          <div class="macro-name" style="color:var(--cyan)">Carbs</div>
+          <div style="font-size:0.62rem;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;" id="mr-c-goal">/ 250g</div>
+        </div>
+        <div class="macro-ring-card">
+          <div class="macro-ring-wrap">
+            <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/><circle id="mr-fat" cx="32" cy="32" r="26" fill="none" stroke="#ffd32a" stroke-width="6" stroke-linecap="round" stroke-dasharray="163" stroke-dashoffset="163"/></svg>
+            <div class="macro-ring-val"><div class="macro-ring-num" id="mr-f-val">0g</div><div class="macro-ring-unit">eaten</div></div>
+          </div>
+          <div class="macro-name" style="color:var(--yellow)">Fat</div>
+          <div style="font-size:0.62rem;color:var(--muted);margin-top:2px;font-family:'DM Mono',monospace;" id="mr-f-goal">/ 65g</div>
+        </div>
+      </div>
+
+      <!-- Meals -->
+      <div class="meal-section">
+        <div id="meal-groups-list"></div>
+      </div>
+
+      <!-- Water tracker -->
+      <div class="water-card">
+        <div class="water-header">
+          <div>
+            <div style="font-size:0.88rem;font-weight:800;color:var(--text);">💧 Water Intake</div>
+            <div style="font-size:0.7rem;color:var(--muted2);margin-top:2px;" id="water-label">0 / 8 glasses</div>
+          </div>
+          <button onclick="resetWater()" style="background:none;border:none;color:var(--muted);font-size:0.75rem;cursor:pointer;font-family:var(--font-body);">Reset</button>
+        </div>
+        <div class="water-cups" id="water-cups"></div>
+      </div>
+
+      <!-- Diet Tips Section -->
+      <div class="diet-tips-section">
+        <div class="diet-tips-header">
+          <div class="diet-tips-title">🥗 Diet Tips for Your Plan</div>
+          <div class="diet-tips-sub">Matched to your Y-Shape & V-Shape goals</div>
+        </div>
+        <div class="diet-tabs-row" id="diet-tabs-row">
+          <button class="diet-tab active" onclick="switchDietTab('shoulder', event)">Shoulder Day</button>
+          <button class="diet-tab" onclick="switchDietTab('back', event)">Back Day</button>
+          <button class="diet-tab" onclick="switchDietTab('core', event)">Core Day</button>
+          <button class="diet-tab" onclick="switchDietTab('rest', event)">Rest Day</button>
+        </div>
+        <div id="diet-tip-content" class="diet-tip-content"></div>
+      </div>
+
+      <div style="height:16px;"></div>
+    </div>
+
+    <!-- ── CALENDAR SCREEN ── -->
+    <div class="screen" id="s-calendar">
+      <div class="ph">
+        <div class="ph-top">
+          <div><div class="pt">WORKOUT CALENDAR</div><div class="ps">Y-Shape & V-Shape Plan</div></div>
+          <div class="icon-btn" onclick="calToday()">📍</div>
+        </div>
+      </div>
+
+      <!-- Month nav -->
+      <div class="cal-month-nav">
+        <button class="cal-nav-btn" onclick="calPrevMonth()">‹</button>
+        <div class="cal-month-label" id="cal-month-label">April 2026</div>
+        <button class="cal-nav-btn" onclick="calNextMonth()">›</button>
+      </div>
+
+      <!-- Monthly stats strip -->
+      <div class="cal-month-stats" id="cal-month-stats"></div>
+
+      <!-- Calendar grid -->
+      <div class="cal-grid-header">
+        <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+
+      <!-- Day detail panel (slides up on tap) -->
+      <div class="cal-day-detail" id="cal-day-detail"></div>
+
+      <!-- Weekly Plan Legend -->
+      <div class="cal-legend">
+        <div class="cal-legend-title">📅 Weekly Y/V-Shape Split</div>
+        <div class="cal-legend-grid">
+          <div class="cal-legend-item">
+            <div class="cal-dot" style="background:#ff6b2b;"></div>
+            <div>
+              <div class="cal-leg-name">Shoulder + Back</div>
+              <div class="cal-leg-sub">Mon / Thu — Focus muscles</div>
+            </div>
+          </div>
+          <div class="cal-legend-item">
+            <div class="cal-dot" style="background:#4f9eff;"></div>
+            <div>
+              <div class="cal-leg-name">Chest + Core</div>
+              <div class="cal-leg-sub">Tue / Fri — Support muscles</div>
+            </div>
+          </div>
+          <div class="cal-legend-item">
+            <div class="cal-dot" style="background:#2ee8c4;"></div>
+            <div>
+              <div class="cal-leg-name">V-Shape Grind</div>
+              <div class="cal-leg-sub">Wed — Advanced push</div>
+            </div>
+          </div>
+          <div class="cal-legend-item">
+            <div class="cal-dot" style="background:#a78bfa;"></div>
+            <div>
+              <div class="cal-leg-name">Cardio / Active Rest</div>
+              <div class="cal-leg-sub">Sat — Light movement</div>
+            </div>
+          </div>
+          <div class="cal-legend-item">
+            <div class="cal-dot" style="background:rgba(255,255,255,0.2);"></div>
+            <div>
+              <div class="cal-leg-name">Rest Day</div>
+              <div class="cal-leg-sub">Sun — Full recovery</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Champion Physique Tips -->
+      <div class="champ-section">
+        <div class="champ-title">🏆 Champion Physique Secrets</div>
+        <div class="champ-sub">Inspired by the world's best bodies</div>
+        <div class="champ-cards" id="champ-cards"></div>
+      </div>
+
+      <div style="height:20px;"></div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- ── CUSTOM WORKOUT BUILDER ── -->
+  <div class="builder-screen" id="builder-screen">
+    <div class="builder-header">
+      <div>
+        <div class="builder-title" id="builder-title-lbl">BUILD WORKOUT</div>
+        <div style="font-size:0.72rem;color:var(--muted2);" id="builder-subtitle">Design your own program</div>
+      </div>
+      <div class="aw-close" onclick="closeBuilder()">✕</div>
+    </div>
+    <div class="builder-body" id="builder-body">
+      <!-- Step 1: Info -->
+      <div id="builder-step1">
+        <label class="blabel">Workout Name</label>
+        <input class="binput" id="b-name" type="text" placeholder="e.g. My Push Day…" maxlength="40">
+
+        <label class="blabel">Category</label>
+        <select class="binput" id="b-category">
+          <option>Strength</option><option>Cardio</option><option>HIIT</option><option>Flexibility</option><option>Custom</option>
+        </select>
+
+        <label class="blabel">Difficulty</label>
+        <select class="binput" id="b-difficulty">
+          <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+        </select>
+
+        <label class="blabel">Emoji Icon</label>
+        <div class="emoji-picker" id="emoji-picker"></div>
+
+        <label class="blabel">Color</label>
+        <div class="color-picker" id="color-picker"></div>
+
+        <label class="blabel">Est. Duration (minutes)</label>
+        <input class="binput" id="b-duration" type="number" placeholder="30" min="5" max="180">
+
+        <label class="blabel">Est. Calories Burned</label>
+        <input class="binput" id="b-calories" type="number" placeholder="300" min="50" max="1500">
+      </div>
+
+      <!-- Step 2: Exercises -->
+      <div id="builder-step2" style="display:none;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <label class="blabel" style="margin-bottom:0;">Exercises Added</label>
+          <button onclick="openExPickerSheet()" style="background:var(--orange-dim);border:1px solid rgba(255,107,43,0.3);color:var(--orange);border-radius:10px;padding:6px 14px;font-family:var(--font-body);font-size:0.78rem;font-weight:700;cursor:pointer;">＋ Add Exercise</button>
+        </div>
+        <div class="builder-ex-list" id="builder-ex-list">
+          <div style="text-align:center;padding:24px;color:var(--muted);font-size:0.82rem;" id="builder-ex-empty">No exercises yet. Tap + to add.</div>
+        </div>
+      </div>
+    </div>
+    <div class="builder-footer">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:10px;">
+        <button class="ctrl-btn ctrl-secondary" id="builder-back-btn" onclick="builderBack()">← Back</button>
+        <button class="ctrl-btn ctrl-primary" id="builder-next-btn" onclick="builderNext()">Next: Add Exercises →</button>
+      </div>
+    </div>
+  </div>
+  <div class="active-screen" id="active-screen">
+    <div class="aw-header">
+      <div>
+        <div class="aw-title" id="aw-title">WORKOUT</div>
+        <div style="font-size:0.72rem;color:var(--muted2);" id="aw-progress-text">Exercise 1 of 1</div>
+      </div>
+      <div class="aw-close" onclick="confirmEndWorkout()">✕</div>
+    </div>
+    <div class="aw-progress-bar"><div class="aw-progress-fill" id="aw-prog-fill" style="width:0%"></div></div>
+
+    <div class="aw-body" id="aw-body">
+      <div class="aw-ex-card" id="aw-ex-card">
+        <div class="aw-ex-card-top">
+          <span class="aw-ex-icon" id="aw-ex-icon">💪</span>
+          <div class="aw-ex-name" id="aw-ex-name">EXERCISE</div>
+          <div class="aw-ex-muscle" id="aw-ex-muscle">Loading...</div>
+        </div>
+        <div class="aw-ex-card-body">
+        <div id="aw-timer-wrap" style="display:none">
+          <div class="timer-ring-wrap">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle class="timer-ring-bg" cx="80" cy="80" r="68"/>
+              <circle class="timer-ring-fg" id="timer-circle" cx="80" cy="80" r="68"
+                stroke-dasharray="427" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-text">
+              <div class="timer-num" id="timer-display">0:30</div>
+              <div class="timer-lbl">seconds</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="ctrl-btn ctrl-secondary" style="padding:10px 20px;" onclick="toggleTimer()">⏸ Pause</button>
+            <button class="ctrl-btn ctrl-secondary" style="padding:10px 20px;" onclick="resetTimer()">↺ Reset</button>
+          </div>
+        </div>
+
+        <!-- Sets (for reps exercises) -->
+        <div id="aw-sets-wrap">
+          <div style="display:grid;grid-template-columns:28px 1fr 38px;gap:8px;margin-bottom:10px;padding:0 2px;">
+            <div class="sets-col-hdr" style="text-align:center;">SET</div>
+            <div class="sets-col-hdr" style="text-align:center;">REPS</div>
+            <div></div>
+          </div>
+          <div id="sets-container"></div>
+        </div>
+        </div><!-- /aw-ex-card-body -->
+      </div>
+
+      <!-- Exercise queue -->
+      <div class="section-lbl">Up Next</div>
+      <div class="aw-ex-list" id="aw-ex-list"></div>
+    </div>
+
+    <!-- Rest overlay -->
+    <div class="rest-overlay" id="rest-overlay">
+      <div class="rest-label">Rest Time</div>
+      <div class="rest-time" id="rest-display">1:00</div>
+      <div class="rest-sub">Next: <span id="rest-next" style="color:var(--text);font-weight:700;"></span></div>
+      <button class="ctrl-btn ctrl-primary" style="padding:14px 32px;" onclick="skipRest()">Skip Rest →</button>
+    </div>
+
+    <div class="aw-footer">
+      <div class="aw-ctrl">
+        <button class="ctrl-btn ctrl-secondary" onclick="prevExercise()">← Prev</button>
+        <button class="ctrl-btn ctrl-primary" id="next-btn" onclick="nextExercise()">Next Exercise →</button>
+        <button class="ctrl-btn ctrl-danger" onclick="confirmEndWorkout()">End</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Bottom Nav — 5 tabs ── -->
+  <div class="nav">
+    <button class="nb active" id="nb-home"      onclick="goTo('home')">      <span class="ni">🏠</span><span class="nl">Home</span></button>
+    <button class="nb"        id="nb-workouts"  onclick="goTo('workouts')">  <span class="ni">🏋️</span><span class="nl">Train</span></button>
+    <button class="nb"        id="nb-calendar"  onclick="goTo('calendar')">  <span class="ni">📅</span><span class="nl">Plan</span></button>
+    <button class="nb"        id="nb-nutrition" onclick="goTo('nutrition')"> <span class="ni">🥗</span><span class="nl">Fuel</span></button>
+    <button class="nb"        id="nb-profile"   onclick="goTo('profile')">   <span class="ni">👤</span><span class="nl">Me</span></button>
+  </div>
+
+  <!-- Sheet -->
+  <div class="sheet-backdrop" id="sheet">
+    <div class="sheet" id="sheet-content">
+      <div class="sheet-handle"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ── In-App Notification Banner ── -->
+  <div class="notif-banner" id="notif-banner">
+    <div class="notif-sweep"><div class="notif-sweep-fill" id="notif-sweep-fill"></div></div>
+    <div class="notif-banner-inner">
+      <div class="notif-app-icon" id="notif-icon">🔥</div>
+      <div class="notif-content">
+        <div class="notif-app-name">BATAK FITNESS</div>
+        <div class="notif-title" id="notif-title">Notification</div>
+        <div class="notif-body"  id="notif-body">Body text here</div>
+      </div>
+      <div class="notif-time" id="notif-time">now</div>
+    </div>
+    <div class="notif-actions">
+      <button class="notif-action-btn" onclick="dismissNotif()">Dismiss</button>
+      <button class="notif-action-btn primary" id="notif-action-btn" onclick="notifAction()">View</button>
+    </div>
+  </div>
+
+  <!-- ── Notification Center ── -->
+  <div class="notif-center" id="notif-center">
+    <div class="notif-center-header">
+      <div class="notif-center-title">NOTIFICATIONS</div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span onclick="clearAllNotifs()" style="font-size:0.72rem;color:var(--muted2);cursor:pointer;font-weight:700;">Clear All</span>
+        <div class="aw-close" onclick="closeNotifCenter()">✕</div>
+      </div>
+    </div>
+    <div class="notif-center-body" id="notif-center-body"></div>
+  </div>
+
+</div><!-- /phone -->
+
+<script src="script.js"></script>
+
+</body>
+</html>
